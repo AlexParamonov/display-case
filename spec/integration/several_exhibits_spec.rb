@@ -29,15 +29,49 @@ describe "several exhibits" do
     @exhibited.exhibit_chain.must_include DisplayCase::BasicExhibit
   end
 
-  it "should delegate messages as inheritance, starting from first exhibit in chain" do
-    first_exhibit.class_eval do
-      def render
-        title
+  describe "message delegation" do
+    it "should delegate messages as inheritance, starting from first exhibit in chain" do
+      first_exhibit.class_eval do
+        def render
+          pointer.title
+        end
       end
-    end
-    mock.instance_of(second_exhibit).title
+      mock.instance_of(second_exhibit).title
 
-    @exhibited.render
+      @exhibited.render
+    end
+
+    it "should not be influenced by other manual exhibitions" do
+      skip "fix it to allow custom exhibitions"
+      other_exhibit = new_exhibit
+      mock.instance_of(other_exhibit).title
+      object = other_exhibit.new(@exhibited, stub!)
+
+      first_exhibit.class_eval do
+        def render
+          pointer.title
+        end
+      end
+
+      @exhibited.render
+    end
+
+    it "should not be influenced by other calls to exhibit" do
+      skip "fix it to allow multiple calls to .exhibit"
+      # other exhibition
+      @exhibits = [new_exhibit, new_exhibit]
+      stub(DisplayCase::Exhibit).exhibits { @exhibits }
+      DisplayCase::Exhibit.exhibit(stub(:junk))
+
+      first_exhibit.class_eval do
+        def render
+          pointer.title
+        end
+      end
+      mock.instance_of(second_exhibit).title
+
+      @exhibited.render
+    end
   end
 
   private
