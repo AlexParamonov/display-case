@@ -29,6 +29,17 @@ describe "several exhibits" do
     @exhibited.exhibit_chain.must_include DisplayCase::BasicExhibit
   end
 
+  it "should delegate messages as inheritance, starting from first exhibit in chain" do
+    first_exhibit.class_eval do
+      def render
+        title
+      end
+    end
+    mock.instance_of(second_exhibit).title
+
+    @exhibited.render
+  end
+
   private
   def new_exhibit
     Class.new(DisplayCase::Exhibit) { def self.applicable_to?(*args); true; end }
