@@ -42,7 +42,6 @@ describe "several exhibits" do
     end
 
     it "should not be influenced by other manual exhibitions" do
-      skip "fix it to allow custom exhibitions"
       other_exhibit = new_exhibit
       mock.instance_of(other_exhibit).title
       object = other_exhibit.new(@exhibited, stub!)
@@ -53,11 +52,10 @@ describe "several exhibits" do
         end
       end
 
-      @exhibited.render
+      object.render
     end
 
     it "should not be influenced by other calls to exhibit" do
-      skip "fix it to allow multiple calls to .exhibit"
       # other exhibition
       @exhibits = [new_exhibit, new_exhibit]
       stub(DisplayCase::Exhibit).exhibits { @exhibits }

@@ -19,29 +19,6 @@ module DisplayCase
       @@exhibits << child
     end
 
-    def self.pointer=(pointer)
-      # TODO should should be @pointer
-      @@pointer = pointer
-    end
-
-    def self.pointer
-      @@pointer
-    end
-
-    def pointer
-      __class__.pointer
-    end
-
-    # def pointer
-    #   self.__class__.pointer || begin
-    #     if respond_to? :__getobg__
-    #       __getobg__.pointer
-    #     else
-    #       self
-    #     end
-    #   end
-    # end
-
     def self.exhibit(object, context=nil)
       return object if exhibited_object?(object)
       if defined? Rails
@@ -54,7 +31,6 @@ module DisplayCase
       exhibits.inject(object) do |object, exhibit_class|
         exhibit_class.exhibit_if_applicable(object, context)
       end.tap do |obj|
-        self.pointer = obj
         Rails.logger.debug "Exhibits applied: #{obj.inspect_exhibits}" if defined? Rails
       end
     end
@@ -103,6 +79,17 @@ module DisplayCase
     def initialize(model, context)
       @context = context
       super(model)
+      @pointer ||= self
+      self.pointer = @pointer
+    end
+
+    def pointer=(pointer)
+      @pointer = pointer
+      __getobj__.pointer = pointer if __getobj__.respond_to? :pointer=
+    end
+
+    def pointer
+      @pointer
     end
 
     alias_method :__class__, :class
