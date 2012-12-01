@@ -79,6 +79,17 @@ module DisplayCase
     def initialize(model, context)
       @context = context
       super(model)
+      @pointer ||= self
+      self.pointer = @pointer
+    end
+
+    def pointer=(pointer)
+      @pointer = pointer
+      __getobj__.pointer = pointer if __getobj__.respond_to? :pointer=
+    end
+
+    def pointer
+      @pointer
     end
 
     alias_method :__class__, :class
