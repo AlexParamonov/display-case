@@ -150,7 +150,7 @@ module DisplayCase
       "#{inspect_exhibits}(#{__getobj__.inspect})"
     end
 
-    def render(template)
+    def render(template = view_context)
       template.render(:partial => to_partial_path, :object => self)
     end
 
@@ -164,6 +164,10 @@ module DisplayCase
       else
         yield
       end
+    end
+
+    def view_context
+      context.view_context
     end
 
     private
